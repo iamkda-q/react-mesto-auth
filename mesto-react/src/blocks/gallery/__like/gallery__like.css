@@ -1,0 +1,10 @@
+.gallery__like {
+  /* grid-area: like; */
+  width: 22px;
+  height: 19px;
+/*   justify-self: center; */
+  background: url(../../../images/like_disable.svg) no-repeat;
+  cursor: pointer;
+  border: none;
+  transition: 2s;
+}

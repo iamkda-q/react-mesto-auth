@@ -1,0 +1,51 @@
+.popup__close-button {
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: calc(100% + 8px);
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.popup__close-button::before,
+.popup__close-button::after {
+  content: '';
+  position: absolute;
+  top: calc(50% - 2.5px);
+  left: calc(50% - 21px);
+  border-top: 2.5px solid #fff;
+  border-right: 21px solid #fff;
+  border-bottom: 2.5px solid #fff;
+  border-left: 21px solid #fff;
+}
+
+.popup__close-button::before {
+  transform: rotate(-45deg);
+}
+
+.popup__close-button::after {
+  transform: rotate(45deg);
+}
+
+@media screen and (max-width: 560px) {
+  .popup__close-button {
+    width: 20px;
+    height: 20px;
+    bottom: calc(100% + 16px);
+    left: calc(100% - 20px);
+  }
+
+  .popup__close-button::before,
+  .popup__close-button::after {
+    top: calc(50% - 1.5px);
+    left: calc(50% - 14px);
+    border-top: 1.5px solid #fff;
+    border-right: 14px solid #fff;
+    border-bottom: 1.5px solid #fff;
+    border-left: 14px solid #fff;
+  }
+}
+

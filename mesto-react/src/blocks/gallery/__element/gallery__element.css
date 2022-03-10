@@ -1,0 +1,16 @@
+.gallery__element {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff; /* фоновая подложка белого цвета */
+  border-radius: 10px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 62px; /* 62px для лайка и его отступов */
+  grid-template-rows: 282px 1fr;
+  grid-template-areas:
+  "photo photo"
+  "figcaption like";
+  align-items: center;
+  position: relative;
+ }

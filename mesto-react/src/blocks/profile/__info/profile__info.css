@@ -1,0 +1,19 @@
+.profile__info {
+  grid-area: info;
+  display: grid;
+  grid-template-columns: fit-content(40vw) 1fr;
+  grid-template-rows: repeat(2, auto);
+  grid-template-areas:
+  'name edit-profile-button'
+  'vocation .';
+  gap: 8px 18px;
+}
+
+@media screen and (max-width: 660px) {
+  .profile__info {
+    margin-left: 26px;
+    grid-template-columns: fit-content(80vw) 1fr;
+    gap: 7px 10px;
+  }
+}
+

@@ -1,0 +1,17 @@
+.main {
+  max-width: 880px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 51px;
+  padding: 40px 2vw 0; /* паддинги по бокам для неприлипания контента на разрешениях меньше 880px
+                         в header так не сделано, из-за использования нижнего bordera - он начинает неконтроллируемо
+                         расти на больших разрешениях   */
+}
+
+@media screen and (max-width: 660px) {
+  .main {
+    padding-top: 42px;
+    row-gap: 36px;
+  }
+}

@@ -1,0 +1,23 @@
+.profile {
+  min-height: 120px;
+  display: grid;
+  grid-template-columns: 120px 1fr 150px;
+  grid-template-rows: 120px;
+  grid-template-areas:
+  "avatar info add-button";
+  column-gap: 2.3vw; /* тема! */
+  position: relative;
+}
+
+@media screen and (max-width: 660px) {
+  .profile {
+    grid-template-columns: 1fr;
+    grid-template-rows: 120px minmax(min-content, max-content) 50px;
+    grid-template-areas:
+    "avatar"
+    "info"
+    "add-button";
+    justify-items: center;
+    row-gap: 30px;
+  }
+}

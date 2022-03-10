@@ -1,0 +1,6 @@
+.popup__container_type_photo {
+  display: grid;
+  grid-template-columns: fit-content(75vw);
+  grid-template-rows: auto 12px;
+  row-gap: 10px;
+}

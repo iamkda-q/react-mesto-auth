@@ -1,0 +1,18 @@
+.logo {
+  max-width: 142px;
+  min-height: 33px;
+  object-fit: contain;
+  object-position: center;
+}
+
+@media screen and (max-width: 920px) {
+  .logo {
+    margin-left: 27px; /* чтобы не прилипал к краю экрана */
+  }
+}
+@media screen and (max-width: 660px) {
+  .logo {
+    max-width: 104px;
+    min-height: 24px;
+  }
+}

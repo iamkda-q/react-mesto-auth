@@ -1,0 +1,17 @@
+.popup__text {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 1.21;
+  color: #000;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding-bottom: 9px; /* для позиционирования bordera */
+  margin-bottom: 30px;
+}
+
+.popup__text:last-of-type {
+  margin-bottom: 48px;
+}

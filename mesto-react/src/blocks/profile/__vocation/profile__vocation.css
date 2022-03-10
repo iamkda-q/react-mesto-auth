@@ -1,0 +1,17 @@
+.profile__vocation {
+  grid-area: vocation;
+  margin: 0;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 1.21;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 660px) {
+  .profile__vocation {
+    font-size: 14px;
+    text-align: center;
+  }
+}

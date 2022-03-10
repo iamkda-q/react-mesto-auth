@@ -1,0 +1,44 @@
+.profile__edit-gallery-button {
+  grid-area: add-button;
+  padding: 0;
+  width: 150px;
+  min-height: 50px;
+  align-self: center;
+  justify-self: end;
+  border: 2px solid #fff;
+  background: none;
+  cursor: pointer;
+  position: relative;
+  border-radius: 2px;
+}
+
+.profile__edit-gallery-button::before,
+.profile__edit-gallery-button::after {
+  content: '';
+  position: absolute;
+  border-top: 11px solid #fff;
+  border-right: 1px solid #fff;
+  border-bottom: 11px solid #fff;
+  border-left: 1px solid #fff;
+  top: calc(50% - 11px); /* отступ в половину блока минус половина суммарной толщины вертикальных бордеров (позиционирование по центру)*/
+  left: calc(50% - 1px); /* аналогично */
+}
+
+.profile__edit-gallery-button::after {
+  transform: rotate(90deg);
+}
+
+@media screen and (max-width: 660px) {
+  .profile__edit-gallery-button  {
+    width: 282px;
+    justify-self: center;
+  }
+
+  .profile__edit-gallery-button::before,
+  .profile__edit-gallery-button::after {
+    border-top: 8px solid #fff;
+    border-bottom: 8px solid #fff;
+    top: calc(50% - 8px);
+  }
+
+}
