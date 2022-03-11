@@ -5,6 +5,8 @@
   grid-template-columns: 1fr 1fr;
   padding: 45px 0 41px;
   border-bottom: 1px solid rgba(84, 84, 84, 0.7);
+  align-items: center;
+  justify-items: start;
 }
 
 @media screen and (max-width: 660px) {

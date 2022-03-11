@@ -149,6 +149,23 @@ function App() {
         setSelectedCard(card);
     }
 
+    const signData = {
+        register: {
+            linkText: "Войти",
+            optionText: "Регистрация",
+            buttonText: "Зарегистрироваться",
+            buttonTitle: "Уже зарегистрированы? Войти",
+            link: "/sign-in"
+        },
+        login: {
+            linkText: "Регистрация",
+            optionText: "Вход",
+            buttonText: "Войти",
+            buttonTitle: null,
+            link: "/sign-up"
+        },
+    }
+
     /* Не понял зачем по заданию реализовывать новый обработчик, если можно в props onClose каждого попапа записать соответствующую функцию handle____
 и попап также будет закрываться */
     function closeAllPopups() {
@@ -163,11 +180,12 @@ function App() {
             <div className="page">
                 <Switch>
                     <Route path="/sign-up">
-                        <Header buttonText="Войти"/>
-                        <Register />
+                        <Header linkText={signData.register.linkText} link={signData.register.link}/>
+                        <Register {...signData.register} />
                     </Route>
                     <Route path="/sign-in">
-                        <Header buttonText="Регистрация"/>
+                        <Header linkText={signData.login.linkText} link={signData.login.link}/>
+                        <Register {...signData.login} />
                     </Route>
                     <Route exact path="/">
                         <Header />

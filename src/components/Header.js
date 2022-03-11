@@ -1,10 +1,11 @@
+import { Link } from "react-router-dom";
 import logo from "../images/logo.svg";
 
-function Header({buttonText}) {
+function Header({ linkText, link }) {
     return (
         <header className="header">
-            <a
-                href="#"
+            <Link
+                to="/"
                 className="header__link page__hover page__hover_shade_super-dark"
             >
                 <img
@@ -12,8 +13,13 @@ function Header({buttonText}) {
                     alt="Логотип приложения Место"
                     className="logo header__logo"
                 />
-            </a>
-            <button className="header__button page__hover page__hover_shade_super-dark">{buttonText}</button>
+            </Link>
+            <Link
+                to={link}
+                className="header__button page__hover page__hover_shade_super-dark"
+            >
+                {linkText}
+            </Link>
         </header>
     );
 }
