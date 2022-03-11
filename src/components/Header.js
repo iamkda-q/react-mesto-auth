@@ -1,6 +1,6 @@
 import logo from "../images/logo.svg";
 
-function Header() {
+function Header({buttonText}) {
     return (
         <header className="header">
             <a
@@ -13,6 +13,7 @@ function Header() {
                     className="logo header__logo"
                 />
             </a>
+            <button className="header__button page__hover page__hover_shade_super-dark">{buttonText}</button>
         </header>
     );
 }

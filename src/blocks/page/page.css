@@ -6,6 +6,7 @@
   font-style: normal;
   color: #fff;
   background-color: #000;
+  min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;

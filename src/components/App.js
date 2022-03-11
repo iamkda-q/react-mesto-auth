@@ -1,4 +1,5 @@
 import React from "react";
+import { Route, Switch } from "react-router-dom";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
@@ -9,6 +10,7 @@ import CurrentUserContext from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
+import Register from "./Register";
 
 function App() {
     const [isEditProfilePopupOpen, setProfileOpen] = React.useState(false);
@@ -159,44 +161,58 @@ function App() {
     return (
         <CurrentUserContext.Provider value={currentUser}>
             <div className="page">
-                <Header />
-                <Main
-                    onEditProfile={handleEditProfileClick}
-                    onAddPlace={handleAddPlaceClick}
-                    onEditAvatar={handleEditAvatarClick}
-                    onCardClick={handleCardClick}
-                    cards={cards}
-                    onCardLike={handleCardLike}
-                    onCardDelete={handleCardDelete}
-                />
-                <Footer />
+                <Switch>
+                    <Route path="/sign-up">
+                        <Header buttonText="Войти"/>
+                        <Register />
+                    </Route>
+                    <Route path="/sign-in">
+                        <Header buttonText="Регистрация"/>
+                    </Route>
+                    <Route exact path="/">
+                        <Header />
+                        <Main
+                            onEditProfile={handleEditProfileClick}
+                            onAddPlace={handleAddPlaceClick}
+                            onEditAvatar={handleEditAvatarClick}
+                            onCardClick={handleCardClick}
+                            cards={cards}
+                            onCardLike={handleCardLike}
+                            onCardDelete={handleCardDelete}
+                        />
+                        <Footer />
 
-                <EditProfilePopup
-                    isOpen={isEditProfilePopupOpen}
-                    onClose={closeAllPopups}
-                    onUpdateUser={handleUpdateUser}
-                />
+                        <EditProfilePopup
+                            isOpen={isEditProfilePopupOpen}
+                            onClose={closeAllPopups}
+                            onUpdateUser={handleUpdateUser}
+                        />
 
-                <EditAvatarPopup
-                    isOpen={isEditAvatarPopupOpen}
-                    onClose={closeAllPopups}
-                    onUpdateAvatar={handleUpdateAvatar}
-                />
+                        <EditAvatarPopup
+                            isOpen={isEditAvatarPopupOpen}
+                            onClose={closeAllPopups}
+                            onUpdateAvatar={handleUpdateAvatar}
+                        />
 
-                <AddPlacePopup
-                    isOpen={isAddPlacePopupOpen}
-                    onClose={closeAllPopups}
-                    onAddPlace={handleAddPlace}
-                />
+                        <AddPlacePopup
+                            isOpen={isAddPlacePopupOpen}
+                            onClose={closeAllPopups}
+                            onAddPlace={handleAddPlace}
+                        />
 
-                <PopupWithForm
-                    name="are-you-sure"
-                    title="Вы уверены?"
-                    isOpen={false}
-                    buttonText="Абсолютли!"
-                />
+                        <PopupWithForm
+                            name="are-you-sure"
+                            title="Вы уверены?"
+                            isOpen={false}
+                            buttonText="Абсолютли!"
+                        />
 
-                <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+                        <ImagePopup
+                            card={selectedCard}
+                            onClose={closeAllPopups}
+                        />
+                    </Route>
+                </Switch>
             </div>
         </CurrentUserContext.Provider>
     );
