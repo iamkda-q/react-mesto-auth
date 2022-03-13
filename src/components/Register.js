@@ -1,19 +1,70 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import apiAuth from "../utils/apiAuth";
 
-function Register({ optionText, buttonText, buttonTitle, link}) {
+function Register({ optionText, buttonText, buttonTitle, link, handleLogin}) {
+    const [email, setEmail] = React.useState("");
+    const [password, setPassword] = React.useState("");
+    const history = useHistory();
+
+    React.useEffect(() => {
+        setEmail("");
+        setPassword("");
+    }, [link]);
+
+    function handleChangeEmail(evt) {
+        setEmail(evt.target.value);
+    }
+
+    function handleChangePassword(evt) {
+        setPassword(evt.target.value);
+    }
+
+    function handleSubmit(evt) {
+        evt.preventDefault();
+        if (link == "/sign-in") {
+            apiAuth
+                .signIn(password, email)
+                .then((data) => {
+                    if (data.token) {
+                        console.log("Токенизация");
+                        localStorage.setItem("usersToken", data.token);
+                        handleLogin();
+                        history.push("/")
+                    } else {
+                        return;
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        } else if (link == "/sign-up") {
+            apiAuth
+                .signUp(password, email)
+                .then((res) => {
+                    console.log("Регистрация");
+                    history.push("/sign-in")
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+    }
+
     return (
         <main className="signing">
-            <form>
+            <form onSubmit={handleSubmit}>
                 <h2 className="signing__option">{optionText}</h2>
                 <div className="signing__input-with-error">
                     <input
                         id="form-email"
-                        type="url"
+                        type="email"
                         className="signing__text signing__text_parameter_email"
                         name="email"
                         placeholder="E-mail"
                         required
+                        value={email}
+                        onChange={handleChangeEmail}
                     />
                     <span className="signing__error-text form-email-error"></span>
                 </div>
@@ -25,6 +76,8 @@ function Register({ optionText, buttonText, buttonTitle, link}) {
                         name="password"
                         placeholder="Пароль"
                         required
+                        value={password}
+                        onChange={handleChangePassword}
                     />
                     <span className="signing__error-text form-password-error"></span>
                 </div>
@@ -36,7 +89,10 @@ function Register({ optionText, buttonText, buttonTitle, link}) {
                     {buttonText}
                 </button>
             </form>
-            <Link className="signing__button-title page__hover page__hover_shade_super-dark" to={link}>
+            <Link
+                className="signing__button-title page__hover page__hover_shade_super-dark"
+                to={link}
+            >
                 {buttonTitle}
             </Link>
         </main>

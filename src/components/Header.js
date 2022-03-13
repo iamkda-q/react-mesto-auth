@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import logo from "../images/logo.svg";
 
-function Header({ linkText, link }) {
+function Header({ linkText, link, handleLogOut=null, email }) {
     return (
         <header className="header">
             <Link
@@ -14,9 +14,11 @@ function Header({ linkText, link }) {
                     className="logo header__logo"
                 />
             </Link>
+            {email && <p>{email}</p>}
             <Link
                 to={link}
                 className="header__button page__hover page__hover_shade_super-dark"
+                onClick={handleLogOut}
             >
                 {linkText}
             </Link>

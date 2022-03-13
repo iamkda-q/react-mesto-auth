@@ -1,11 +1,12 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
 import api from "../utils/api";
+import apiAuth from "../utils/apiAuth";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
@@ -18,6 +19,7 @@ function App() {
     const [isEditAvatarPopupOpen, setAvatarOpen] = React.useState(false);
     const [selectedCard, setSelectedCard] = React.useState(null);
     const [cards, setCards] = React.useState([]);
+    const [loggedIn, setLoggedIn] = React.useState(false);
 
     const [currentUser, setCurrentUser] = React.useState({
         name: "Loading...",
@@ -148,26 +150,50 @@ function App() {
     function handleCardClick(card) {
         setSelectedCard(card);
     }
-
+    /* вынести в константы */
     const signData = {
         register: {
-            linkText: "Войти",
+            headerText: "Войти",
+            headerLink: "/sign-in",
             optionText: "Регистрация",
             buttonText: "Зарегистрироваться",
             buttonTitle: "Уже зарегистрированы? Войти",
-            link: "/sign-in"
+            link: "/sign-up",
         },
-        login: {
-            linkText: "Регистрация",
+        logIn: {
+            headerText: "Регистрация",
+            headerLink: "/sign-up",
             optionText: "Вход",
             buttonText: "Войти",
             buttonTitle: null,
-            link: "/sign-up"
+            link: "/sign-in",
         },
-    }
+        online: {
+            headerText: "Выйти",
+            headerLink: "/sign-in",
+        },
+    };
 
-    /* Не понял зачем по заданию реализовывать новый обработчик, если можно в props onClose каждого попапа записать соответствующую функцию handle____
-и попап также будет закрываться */
+    const histiory = useHistory();
+    const [email, setEmail] = React.useState(undefined);
+
+    React.useEffect(() => {
+        const token = localStorage.getItem("usersToken");
+        if (token) {
+            apiAuth
+                .tokenCheck(token)
+                .then((data) => {
+                    console.log(data);
+                    handleLogin();
+                    setEmail(data.data.email);
+                    histiory.push("/");
+                })
+                .catch(() => {
+                    console.log("Не удалось войти в систему");
+                });
+        }
+    }, [loggedIn]);
+
     function closeAllPopups() {
         setProfileOpen(false);
         setPlaceOpen(false);
@@ -175,20 +201,49 @@ function App() {
         setSelectedCard(null);
     }
 
+    function handleLogin() {
+        setLoggedIn(true);
+    }
+
+    function handleLogOut() {
+        localStorage.removeItem("usersToken");
+        setLoggedIn(false);
+        histiory.push("/sign-in");
+    }
+
     return (
         <CurrentUserContext.Provider value={currentUser}>
             <div className="page">
                 <Switch>
                     <Route path="/sign-up">
-                        <Header linkText={signData.register.linkText} link={signData.register.link}/>
+                        <Header
+                            linkText={signData.register.headerText}
+                            link={signData.register.headerLink}
+                        />
                         <Register {...signData.register} />
                     </Route>
                     <Route path="/sign-in">
-                        <Header linkText={signData.login.linkText} link={signData.login.link}/>
-                        <Register {...signData.login} />
+                        <Header
+                            linkText={signData.logIn.headerText}
+                            link={signData.logIn.headerLink}
+                        />
+                        <Register
+                            {...signData.logIn}
+                            handleLogin={handleLogin}
+                        />
                     </Route>
                     <Route exact path="/">
-                        <Header />
+                        {loggedIn ? (
+                            <Redirect to="/" />
+                        ) : (
+                            <Redirect to="/sign-up" />
+                        )}
+                        <Header
+                            linkText={signData.online.headerText}
+                            link={signData.online.headerLink}
+                            handleLogOut={handleLogOut}
+                            email = {email}
+                        />
                         <Main
                             onEditProfile={handleEditProfileClick}
                             onAddPlace={handleAddPlaceClick}
