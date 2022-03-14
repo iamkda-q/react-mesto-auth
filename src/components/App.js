@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch, Redirect, useHistory } from "react-router-dom";
+import { Route, Switch, useHistory } from "react-router-dom";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
@@ -175,7 +175,7 @@ function App() {
         },
     };
 
-    const histiory = useHistory();
+    const history = useHistory();
     const [email, setEmail] = React.useState(undefined);
 
     React.useEffect(() => {
@@ -186,7 +186,7 @@ function App() {
                 .then((data) => {
                     handleLogin();
                     setEmail(data.data.email);
-                    histiory.push("/");
+                    history.push("/");
                 })
                 .catch(() => {
                     console.log("Не удалось войти в систему");
@@ -208,7 +208,7 @@ function App() {
     function handleLogOut() {
         localStorage.removeItem("usersToken");
         setLoggedIn(false);
-        histiory.push("/sign-in");
+        history.push("/sign-in");
     }
 
     const [isInfoToolTipOpen, setInfoToolTipOpen] = React.useState(false);

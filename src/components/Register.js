@@ -29,7 +29,7 @@ function Register({
 
     function handleSubmit(evt) {
         evt.preventDefault();
-        if (link == "/sign-in") {
+        if (link === "/sign-in") {
             apiAuth
                 .signIn(password, email)
                 .then((data) => {
@@ -44,7 +44,7 @@ function Register({
                 .catch((err) => {
                     handleInfoToolTip(); //разобраться, как сделать json внутри catch и работать с объектом ошибки, чтобы достать оттуда текст и вставить в попап
                 })
-        } else if (link == "/sign-up") {
+        } else if (link === "/sign-up") {
             apiAuth
                 .signUp(password, email)
                 .then((res) => {
