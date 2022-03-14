@@ -47,19 +47,18 @@ class ApiAuth {
         });
     }
 
-    tokenCheck(token) {
-        return fetch(`${this._baseUrl}/users/me`, {
+    async tokenCheck(token) {
+        const res = await fetch(`${this._baseUrl}/users/me`, {
             headers: {
                 "Content-Type": "application/json",
-                "Authorization" : `Bearer ${token}`
+                "Authorization": `Bearer ${token}`
             },
             method: "GET"
-        }).then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-            return Promise.reject(res);
-        })
+        });
+        if (res.ok) {
+            return res.json();
+        }
+        return await Promise.reject(res);
     }
 }
 

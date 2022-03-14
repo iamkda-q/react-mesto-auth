@@ -8,7 +8,7 @@ function Register({
     buttonTitle,
     link,
     handleLogin,
-    handleRegPopup,
+    handleInfoToolTip,
 }) {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
@@ -42,19 +42,17 @@ function Register({
                     }
                 })
                 .catch((err) => {
-                    console.log("Отсюда")
-                    handleRegPopup(); //разобраться, как сделать json внутри catch и работать с объектом ошибки, чтобы достать оттуда текст и вставить в попап
+                    handleInfoToolTip(); //разобраться, как сделать json внутри catch и работать с объектом ошибки, чтобы достать оттуда текст и вставить в попап
                 })
         } else if (link == "/sign-up") {
             apiAuth
                 .signUp(password, email)
                 .then((res) => {
-                    handleRegPopup("Вы успешно зарегистрировались!", true);
+                    handleInfoToolTip("Вы успешно зарегистрировались!", true);
                     history.push("/sign-in");
                 })
                 .catch((err) => {
-                    console.log(err)
-                    handleRegPopup(); //don't work
+                    handleInfoToolTip(); //don't work
                 })
 
         }

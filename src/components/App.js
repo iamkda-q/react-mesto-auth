@@ -5,7 +5,7 @@ import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
-import Popup from "./Popup";
+import InfoToolTip from "./InfoToolTip";
 import api from "../utils/api";
 import apiAuth from "../utils/apiAuth";
 import CurrentUserContext from "../contexts/CurrentUserContext";
@@ -13,6 +13,7 @@ import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import Register from "./Register";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
     const [isEditProfilePopupOpen, setProfileOpen] = React.useState(false);
@@ -151,7 +152,6 @@ function App() {
     function handleCardClick(card) {
         setSelectedCard(card);
     }
-    /* вынести в константы */
     const signData = {
         register: {
             headerText: "Войти",
@@ -184,7 +184,6 @@ function App() {
             apiAuth
                 .tokenCheck(token)
                 .then((data) => {
-                    console.log(data);
                     handleLogin();
                     setEmail(data.data.email);
                     histiory.push("/");
@@ -212,23 +211,72 @@ function App() {
         histiory.push("/sign-in");
     }
 
-    const [isPopupRegOpen, setPopupRegOpen] = React.useState(false);
+    const [isInfoToolTipOpen, setInfoToolTipOpen] = React.useState(false);
 
-    function closePopupRegOpen() {
-        setPopupRegOpen(!isPopupRegOpen);
+    function closeInfoToolTip() {
+        setInfoToolTipOpen(!isInfoToolTipOpen);
     }
 
-    const [popupRegParams, setPopupRegParams] = React.useState({
+    const [infoToolTipParams, setInfoToolTipParams] = React.useState({
         success: false,
-        optionText: ""
+        optionText: "",
     });
 
-    function handleRegPopup(optionText = "", success = false) {
-        setPopupRegParams({
+    function handleInfoToolTip(optionText = "", success = false) {
+        setInfoToolTipParams({
             success: success,
             optionText: optionText,
         });
-        setPopupRegOpen(!isPopupRegOpen);
+        closeInfoToolTip();
+    }
+
+    function MainPage() {
+        return (
+            <>
+                <Header
+                    linkText={signData.online.headerText}
+                    link={signData.online.headerLink}
+                    handleLogOut={handleLogOut}
+                    email={email}
+                />
+                <Main
+                    onEditProfile={handleEditProfileClick}
+                    onAddPlace={handleAddPlaceClick}
+                    onEditAvatar={handleEditAvatarClick}
+                    onCardClick={handleCardClick}
+                    cards={cards}
+                    onCardLike={handleCardLike}
+                    onCardDelete={handleCardDelete}
+                />
+                <Footer />
+
+                <EditProfilePopup
+                    isOpen={isEditProfilePopupOpen}
+                    onClose={closeAllPopups}
+                    onUpdateUser={handleUpdateUser}
+                />
+
+                <EditAvatarPopup
+                    isOpen={isEditAvatarPopupOpen}
+                    onClose={closeAllPopups}
+                    onUpdateAvatar={handleUpdateAvatar}
+                />
+
+                <AddPlacePopup
+                    isOpen={isAddPlacePopupOpen}
+                    onClose={closeAllPopups}
+                    onAddPlace={handleAddPlace}
+                />
+
+                <PopupWithForm
+                    name="are-you-sure"
+                    title="Вы уверены?"
+                    isOpen={false}
+                    buttonText="Абсолютли!"
+                />
+                <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+            </>
+        );
     }
 
     return (
@@ -242,12 +290,12 @@ function App() {
                         />
                         <Register
                             {...signData.register}
-                            handleRegPopup={handleRegPopup}
+                            handleInfoToolTip={handleInfoToolTip}
                         />
-                        <Popup
-                            {...popupRegParams}
-                            isOpen = {isPopupRegOpen}
-                            closePopup={closePopupRegOpen}
+                        <InfoToolTip
+                            {...infoToolTipParams}
+                            isOpen={isInfoToolTipOpen}
+                            closePopup={closeInfoToolTip}
                         />
                     </Route>
                     <Route path="/sign-in">
@@ -258,67 +306,15 @@ function App() {
                         <Register
                             {...signData.logIn}
                             handleLogin={handleLogin}
-                            handleRegPopup={handleRegPopup}
+                            handleInfoToolTip={handleInfoToolTip}
                         />
-                        <Popup
-                            {...popupRegParams}
-                            isOpen = {isPopupRegOpen}
-                            closePopup={closePopupRegOpen}
-                        />
-                    </Route>
-                    <Route exact path="/">
-                        {loggedIn ? (
-                            <Redirect to="/" />
-                        ) : (
-                            <Redirect to="/sign-up" />
-                        )}
-                        <Header
-                            linkText={signData.online.headerText}
-                            link={signData.online.headerLink}
-                            handleLogOut={handleLogOut}
-                            email={email}
-                        />
-                        <Main
-                            onEditProfile={handleEditProfileClick}
-                            onAddPlace={handleAddPlaceClick}
-                            onEditAvatar={handleEditAvatarClick}
-                            onCardClick={handleCardClick}
-                            cards={cards}
-                            onCardLike={handleCardLike}
-                            onCardDelete={handleCardDelete}
-                        />
-                        <Footer />
-
-                        <EditProfilePopup
-                            isOpen={isEditProfilePopupOpen}
-                            onClose={closeAllPopups}
-                            onUpdateUser={handleUpdateUser}
-                        />
-
-                        <EditAvatarPopup
-                            isOpen={isEditAvatarPopupOpen}
-                            onClose={closeAllPopups}
-                            onUpdateAvatar={handleUpdateAvatar}
-                        />
-
-                        <AddPlacePopup
-                            isOpen={isAddPlacePopupOpen}
-                            onClose={closeAllPopups}
-                            onAddPlace={handleAddPlace}
-                        />
-
-                        <PopupWithForm
-                            name="are-you-sure"
-                            title="Вы уверены?"
-                            isOpen={false}
-                            buttonText="Абсолютли!"
-                        />
-
-                        <ImagePopup
-                            card={selectedCard}
-                            onClose={closeAllPopups}
+                        <InfoToolTip
+                            {...infoToolTipParams}
+                            isOpen={isInfoToolTipOpen}
+                            closePopup={closeInfoToolTip}
                         />
                     </Route>
+                    <ProtectedRoute component={MainPage} path="/" loggedIn={loggedIn}/>
                 </Switch>
             </div>
         </CurrentUserContext.Provider>

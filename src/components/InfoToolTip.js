@@ -1,7 +1,7 @@
 import successLogo from "../images/success.svg";
 import failLogo from "../images/fail.svg";
 
-function Popup({success, isOpen, optionText, closePopup}) {
+function InfoToolTip({success, isOpen, optionText, closePopup}) {
     return (
         <div className={`popup ${isOpen && "popup_opened"}`}>
             <div className="popup__container popup__container_type_reg">
@@ -18,4 +18,4 @@ function Popup({success, isOpen, optionText, closePopup}) {
     );
 }
 
-export default Popup;
+export default InfoToolTip;
