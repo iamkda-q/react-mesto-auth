@@ -1,0 +1,13 @@
+.signing__text {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 1.21;
+    border: none;
+    background-color: #000;
+    border-bottom: 2px solid rgb(204, 204, 204);
+    padding-bottom: 13px;
+    color: #fff;
+}

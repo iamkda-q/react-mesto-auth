@@ -1,14 +1,19 @@
 import React from "react";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
+import InfoToolTip from "./InfoToolTip";
 import api from "../utils/api";
+import apiAuth from "../utils/apiAuth";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
+import Register from "./Register";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
     const [isEditProfilePopupOpen, setProfileOpen] = React.useState(false);
@@ -16,6 +21,7 @@ function App() {
     const [isEditAvatarPopupOpen, setAvatarOpen] = React.useState(false);
     const [selectedCard, setSelectedCard] = React.useState(null);
     const [cards, setCards] = React.useState([]);
+    const [loggedIn, setLoggedIn] = React.useState(false);
 
     const [currentUser, setCurrentUser] = React.useState({
         name: "Loading...",
@@ -146,9 +152,48 @@ function App() {
     function handleCardClick(card) {
         setSelectedCard(card);
     }
+    const signData = {
+        register: {
+            headerText: "Войти",
+            headerLink: "/sign-in",
+            optionText: "Регистрация",
+            buttonText: "Зарегистрироваться",
+            buttonTitle: "Уже зарегистрированы? Войти",
+            link: "/sign-up",
+        },
+        logIn: {
+            headerText: "Регистрация",
+            headerLink: "/sign-up",
+            optionText: "Вход",
+            buttonText: "Войти",
+            buttonTitle: null,
+            link: "/sign-in",
+        },
+        online: {
+            headerText: "Выйти",
+            headerLink: "/sign-in",
+        },
+    };
 
-    /* Не понял зачем по заданию реализовывать новый обработчик, если можно в props onClose каждого попапа записать соответствующую функцию handle____
-и попап также будет закрываться */
+    const histiory = useHistory();
+    const [email, setEmail] = React.useState(undefined);
+
+    React.useEffect(() => {
+        const token = localStorage.getItem("usersToken");
+        if (token) {
+            apiAuth
+                .tokenCheck(token)
+                .then((data) => {
+                    handleLogin();
+                    setEmail(data.data.email);
+                    histiory.push("/");
+                })
+                .catch(() => {
+                    console.log("Не удалось войти в систему");
+                });
+        }
+    }, [loggedIn]);
+
     function closeAllPopups() {
         setProfileOpen(false);
         setPlaceOpen(false);
@@ -156,10 +201,44 @@ function App() {
         setSelectedCard(null);
     }
 
-    return (
-        <CurrentUserContext.Provider value={currentUser}>
-            <div className="page">
-                <Header />
+    function handleLogin() {
+        setLoggedIn(true);
+    }
+
+    function handleLogOut() {
+        localStorage.removeItem("usersToken");
+        setLoggedIn(false);
+        histiory.push("/sign-in");
+    }
+
+    const [isInfoToolTipOpen, setInfoToolTipOpen] = React.useState(false);
+
+    function closeInfoToolTip() {
+        setInfoToolTipOpen(!isInfoToolTipOpen);
+    }
+
+    const [infoToolTipParams, setInfoToolTipParams] = React.useState({
+        success: false,
+        optionText: "",
+    });
+
+    function handleInfoToolTip(optionText = "", success = false) {
+        setInfoToolTipParams({
+            success: success,
+            optionText: optionText,
+        });
+        closeInfoToolTip();
+    }
+
+    function MainPage() {
+        return (
+            <>
+                <Header
+                    linkText={signData.online.headerText}
+                    link={signData.online.headerLink}
+                    handleLogOut={handleLogOut}
+                    email={email}
+                />
                 <Main
                     onEditProfile={handleEditProfileClick}
                     onAddPlace={handleAddPlaceClick}
@@ -195,8 +274,48 @@ function App() {
                     isOpen={false}
                     buttonText="Абсолютли!"
                 />
-
                 <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+            </>
+        );
+    }
+
+    return (
+        <CurrentUserContext.Provider value={currentUser}>
+            <div className="page">
+                <Switch>
+                    <Route path="/sign-up">
+                        <Header
+                            linkText={signData.register.headerText}
+                            link={signData.register.headerLink}
+                        />
+                        <Register
+                            {...signData.register}
+                            handleInfoToolTip={handleInfoToolTip}
+                        />
+                        <InfoToolTip
+                            {...infoToolTipParams}
+                            isOpen={isInfoToolTipOpen}
+                            closePopup={closeInfoToolTip}
+                        />
+                    </Route>
+                    <Route path="/sign-in">
+                        <Header
+                            linkText={signData.logIn.headerText}
+                            link={signData.logIn.headerLink}
+                        />
+                        <Register
+                            {...signData.logIn}
+                            handleLogin={handleLogin}
+                            handleInfoToolTip={handleInfoToolTip}
+                        />
+                        <InfoToolTip
+                            {...infoToolTipParams}
+                            isOpen={isInfoToolTipOpen}
+                            closePopup={closeInfoToolTip}
+                        />
+                    </Route>
+                    <ProtectedRoute component={MainPage} path="/" loggedIn={loggedIn}/>
+                </Switch>
             </div>
         </CurrentUserContext.Provider>
     );

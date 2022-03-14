@@ -1,0 +1,11 @@
+.signing__input-with-error {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+
+.signing__input-with-error:last-of-type {
+    margin-bottom: 216px;
+}
