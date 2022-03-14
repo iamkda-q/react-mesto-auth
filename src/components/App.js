@@ -5,6 +5,7 @@ import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
+import Popup from "./Popup";
 import api from "../utils/api";
 import apiAuth from "../utils/apiAuth";
 import CurrentUserContext from "../contexts/CurrentUserContext";
@@ -211,6 +212,25 @@ function App() {
         histiory.push("/sign-in");
     }
 
+    const [isPopupRegOpen, setPopupRegOpen] = React.useState(false);
+
+    function closePopupRegOpen() {
+        setPopupRegOpen(!isPopupRegOpen);
+    }
+
+    const [popupRegParams, setPopupRegParams] = React.useState({
+        success: false,
+        optionText: ""
+    });
+
+    function handleRegPopup(optionText = "", success = false) {
+        setPopupRegParams({
+            success: success,
+            optionText: optionText,
+        });
+        setPopupRegOpen(!isPopupRegOpen);
+    }
+
     return (
         <CurrentUserContext.Provider value={currentUser}>
             <div className="page">
@@ -220,7 +240,15 @@ function App() {
                             linkText={signData.register.headerText}
                             link={signData.register.headerLink}
                         />
-                        <Register {...signData.register} />
+                        <Register
+                            {...signData.register}
+                            handleRegPopup={handleRegPopup}
+                        />
+                        <Popup
+                            {...popupRegParams}
+                            isOpen = {isPopupRegOpen}
+                            closePopup={closePopupRegOpen}
+                        />
                     </Route>
                     <Route path="/sign-in">
                         <Header
@@ -230,6 +258,12 @@ function App() {
                         <Register
                             {...signData.logIn}
                             handleLogin={handleLogin}
+                            handleRegPopup={handleRegPopup}
+                        />
+                        <Popup
+                            {...popupRegParams}
+                            isOpen = {isPopupRegOpen}
+                            closePopup={closePopupRegOpen}
                         />
                     </Route>
                     <Route exact path="/">
@@ -242,7 +276,7 @@ function App() {
                             linkText={signData.online.headerText}
                             link={signData.online.headerLink}
                             handleLogOut={handleLogOut}
-                            email = {email}
+                            email={email}
                         />
                         <Main
                             onEditProfile={handleEditProfileClick}

@@ -3,7 +3,7 @@ import PopupWithForm from "./PopupWithForm";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 
 
-function EditProfilePopup({isOpen, onClose, onUpdateUser, buttonText}) {
+function EditProfilePopup({isOpen, onClose, onUpdateUser}) {
 
     const currentUser = React.useContext(CurrentUserContext);
     const [name, setName] = React.useState(currentUser.name);
@@ -37,7 +37,7 @@ function EditProfilePopup({isOpen, onClose, onUpdateUser, buttonText}) {
             isOpen={isOpen}
             onClose={onClose}
             onSubmit={handleSubmit}
-            buttonText={buttonText}
+            buttonText="Сохранить"
         >
             <div className="popup__input-with-error">
                 <input

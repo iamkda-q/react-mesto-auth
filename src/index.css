@@ -48,8 +48,10 @@
 @import url(./blocks/popup/__container/popup__container.css);
 @import url(./blocks/popup/__container/_type/popup__container_type_form.css);
 @import url(./blocks/popup/__container/_type/popup__container_type_photo.css);
+@import url(./blocks/popup/__container/_type/popup__container_type_reg.css);
 @import url(./blocks/popup/__option/popup__option.css);
 @import url(./blocks/popup/__option/_are-you-sure/popup__option_are-you-sure.css);
+@import url(./blocks/popup/__option/_reg/popup__option_reg.css);
 @import url(./blocks/popup/__input-with-error/popup__input-with-error.css);
 @import url(./blocks/popup/__text/popup__text.css);
 @import url(./blocks/popup/__text/_error/popup__text_error.css);
@@ -60,6 +62,7 @@
 @import url(./blocks/popup/__figcaption/popup__figcaption.css);
 @import url(./blocks/popup/__error-text/popup__error-text.css);
 @import url(./blocks/popup/__error-text/_active/popup__error-text_active.css);
+@import url(./blocks/popup/__picture/popup__picture.css);
 
 /*стиль signing*/
 @import url(./blocks/signing/signing.css);

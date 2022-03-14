@@ -2,7 +2,14 @@ import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import apiAuth from "../utils/apiAuth";
 
-function Register({ optionText, buttonText, buttonTitle, link, handleLogin}) {
+function Register({
+    optionText,
+    buttonText,
+    buttonTitle,
+    link,
+    handleLogin,
+    handleRegPopup,
+}) {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     const history = useHistory();
@@ -27,27 +34,29 @@ function Register({ optionText, buttonText, buttonTitle, link, handleLogin}) {
                 .signIn(password, email)
                 .then((data) => {
                     if (data.token) {
-                        console.log("Токенизация");
                         localStorage.setItem("usersToken", data.token);
                         handleLogin();
-                        history.push("/")
+                        history.push("/");
                     } else {
-                        return;
+                        return data;
                     }
                 })
                 .catch((err) => {
-                    console.log(err);
-                });
+                    console.log("Отсюда")
+                    handleRegPopup(); //разобраться, как сделать json внутри catch и работать с объектом ошибки, чтобы достать оттуда текст и вставить в попап
+                })
         } else if (link == "/sign-up") {
             apiAuth
                 .signUp(password, email)
                 .then((res) => {
-                    console.log("Регистрация");
-                    history.push("/sign-in")
+                    handleRegPopup("Вы успешно зарегистрировались!", true);
+                    history.push("/sign-in");
                 })
                 .catch((err) => {
-                    console.log(err);
-                });
+                    console.log(err)
+                    handleRegPopup(); //don't work
+                })
+
         }
     }
 
@@ -91,7 +100,7 @@ function Register({ optionText, buttonText, buttonTitle, link, handleLogin}) {
             </form>
             <Link
                 className="signing__button-title page__hover page__hover_shade_super-dark"
-                to={link}
+                to="/sign-in"
             >
                 {buttonTitle}
             </Link>
