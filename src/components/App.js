@@ -13,6 +13,7 @@ import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import Register from "./Register";
+import Login from "./Login";
 import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
@@ -29,18 +30,20 @@ function App() {
     });
 
     React.useEffect(() => {
-        api.getInitialUserInfo()
-            .then((res) => {
-                setCurrentUser(res);
-            })
-            .catch((res) => {
-                console.log(
-                    `${api.errorHandler(res.status)} Номер ошибки - ${
-                        res.status ? res.status : "неизвестен"
-                    }. Всего хорошего!`
-                );
-            });
-    }, []);
+        loggedIn &&
+            api
+                .getInitialUserInfo()
+                .then((res) => {
+                    setCurrentUser(res);
+                })
+                .catch((res) => {
+                    console.log(
+                        `${api.errorHandler(res.status)} Номер ошибки - ${
+                            res.status ? res.status : "неизвестен"
+                        }. Всего хорошего!`
+                    );
+                });
+    }, [loggedIn]);
 
     function handleUpdateUser(userInfo) {
         api.setUserInfo(userInfo)
@@ -75,7 +78,7 @@ function App() {
     function handleAddPlace(card) {
         api.setNewCard(card)
             .then((newCard) => {
-                setCards([newCard, ...cards]);
+                setCards((prevCards) => [newCard, ...prevCards]);
                 closeAllPopups();
             })
             .catch((res) => {
@@ -88,31 +91,33 @@ function App() {
     }
 
     React.useEffect(() => {
-        api.getInitialCards()
-            .then((res) => {
-                setCards(res);
-            })
-            .catch((res) => {
-                console.log(
-                    `${api.errorHandler(res.status)} Номер ошибки - ${
-                        res.status ? res.status : "неизвестен"
-                    }. Всего хорошего!`
-                );
-            });
-    }, []);
+        loggedIn &&
+            api
+                .getInitialCards()
+                .then((res) => {
+                    setCards(res);
+                })
+                .catch((res) => {
+                    console.log(
+                        `${api.errorHandler(res.status)} Номер ошибки - ${
+                            res.status ? res.status : "неизвестен"
+                        }. Всего хорошего!`
+                    );
+                });
+    }, [loggedIn]);
 
     function handleCardLike(card) {
         const isLiked = card.likes.some((like) => like._id === currentUser._id);
         api.changeLike(card._id, isLiked)
             .then((newCard) => {
-                setCards(
-                    cards.map((item) => {
+                setCards((prevCards) => {
+                    return prevCards.map((item) => {
                         if (newCard._id === item._id) {
                             return newCard;
                         }
                         return item;
-                    })
-                );
+                    });
+                });
             })
             .catch((res) => {
                 console.log(
@@ -126,7 +131,9 @@ function App() {
     function handleCardDelete(card) {
         api.deleteCard(card._id)
             .then(() => {
-                setCards(cards.filter((item) => item._id !== card._id));
+                setCards((prevCards) =>
+                    prevCards.filter((item) => item._id !== card._id)
+                );
             })
             .catch((res) => {
                 console.log(
@@ -152,28 +159,6 @@ function App() {
     function handleCardClick(card) {
         setSelectedCard(card);
     }
-    const signData = {
-        register: {
-            headerText: "Войти",
-            headerLink: "/sign-in",
-            optionText: "Регистрация",
-            buttonText: "Зарегистрироваться",
-            buttonTitle: "Уже зарегистрированы? Войти",
-            link: "/sign-up",
-        },
-        logIn: {
-            headerText: "Регистрация",
-            headerLink: "/sign-up",
-            optionText: "Вход",
-            buttonText: "Войти",
-            buttonTitle: null,
-            link: "/sign-in",
-        },
-        online: {
-            headerText: "Выйти",
-            headerLink: "/sign-in",
-        },
-    };
 
     const history = useHistory();
     const [email, setEmail] = React.useState(undefined);
@@ -184,7 +169,7 @@ function App() {
             apiAuth
                 .tokenCheck(token)
                 .then((data) => {
-                    handleLogin();
+                    setLoggedIn(true);
                     setEmail(data.data.email);
                     history.push("/");
                 })
@@ -201,12 +186,9 @@ function App() {
         setSelectedCard(null);
     }
 
-    function handleLogin() {
-        setLoggedIn(true);
-    }
-
     function handleLogOut() {
         localStorage.removeItem("usersToken");
+        setEmail(undefined);
         setLoggedIn(false);
         history.push("/sign-in");
     }
@@ -230,15 +212,41 @@ function App() {
         closeInfoToolTip();
     }
 
+    function handleSubmitReg(evt, email, password) {
+        console.log(evt, email, password)
+        evt.preventDefault();
+        apiAuth
+            .signUp(password, email)
+            .then((res) => {
+                handleInfoToolTip("Вы успешно зарегистрировались!", true);
+                history.push("/sign-in");
+            })
+            .catch((err) => {
+                handleInfoToolTip(); //don't work
+            });
+    }
+
+    function handleSubmitLog(evt, email, password) {
+        evt.preventDefault();
+        apiAuth
+            .signIn(password, email)
+            .then((data) => {
+                if (data.token) {
+                    localStorage.setItem("usersToken", data.token);
+                    setLoggedIn(true);
+                    history.push("/");
+                } else {
+                    return data;
+                }
+            })
+            .catch((err) => {
+                handleInfoToolTip(); //разобраться, как сделать json внутри catch и работать с объектом ошибки, чтобы достать оттуда текст и вставить в попап
+            });
+    }
+
     function MainPage() {
         return (
             <>
-                <Header
-                    linkText={signData.online.headerText}
-                    link={signData.online.headerLink}
-                    handleLogOut={handleLogOut}
-                    email={email}
-                />
                 <Main
                     onEditProfile={handleEditProfileClick}
                     onAddPlace={handleAddPlaceClick}
@@ -282,40 +290,26 @@ function App() {
     return (
         <CurrentUserContext.Provider value={currentUser}>
             <div className="page">
-                <Switch>
-                    <Route path="/sign-up">
-                        <Header
-                            linkText={signData.register.headerText}
-                            link={signData.register.headerLink}
-                        />
-                        <Register
-                            {...signData.register}
-                            handleInfoToolTip={handleInfoToolTip}
-                        />
-                        <InfoToolTip
-                            {...infoToolTipParams}
-                            isOpen={isInfoToolTipOpen}
-                            closePopup={closeInfoToolTip}
-                        />
-                    </Route>
-                    <Route path="/sign-in">
-                        <Header
-                            linkText={signData.logIn.headerText}
-                            link={signData.logIn.headerLink}
-                        />
-                        <Register
-                            {...signData.logIn}
-                            handleLogin={handleLogin}
-                            handleInfoToolTip={handleInfoToolTip}
-                        />
-                        <InfoToolTip
-                            {...infoToolTipParams}
-                            isOpen={isInfoToolTipOpen}
-                            closePopup={closeInfoToolTip}
-                        />
-                    </Route>
-                    <ProtectedRoute component={MainPage} path="/" loggedIn={loggedIn}/>
-                </Switch>
+                <Header handleLogOut={handleLogOut} email={email} />
+                <Route path="/sign-up">
+                    <Register handleSubmitReg={handleSubmitReg} />
+                </Route>
+
+                <Route path="/sign-in">
+                    <Login handleSubmitLog={handleSubmitLog} />
+                </Route>
+
+                <ProtectedRoute
+                    component={MainPage}
+                    path="/"
+                    loggedIn={loggedIn}
+                />
+
+                <InfoToolTip
+                    {...infoToolTipParams}
+                    isOpen={isInfoToolTipOpen}
+                    closePopup={closeInfoToolTip}
+                />
             </div>
         </CurrentUserContext.Provider>
     );

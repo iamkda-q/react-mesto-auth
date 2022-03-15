@@ -1,15 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
-function Register({ handleSubmitReg }) {
+function Login({ handleSubmitLog }) {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
 
-    const [optionText, buttonText, buttonTitle] = [
-        "Регистрация",
-        "Зарегистрироваться",
-        "Уже зарегистрированы? Войти",
-    ];
+    const [optionText, buttonText] = ["Вход", "Войти"];
 
     React.useEffect(() => {
         setEmail("");
@@ -25,7 +20,7 @@ function Register({ handleSubmitReg }) {
     }
 
     function handleSubmit(evt) {
-        handleSubmitReg(evt, email, password);
+        handleSubmitLog(evt, email, password);
     }
 
     return (
@@ -66,15 +61,8 @@ function Register({ handleSubmitReg }) {
                     {buttonText}
                 </button>
             </form>
-            <Link
-                className="signing__button-title page__hover page__hover_shade_super-dark"
-                to="/sign-in"
-            >
-                {buttonTitle}
-            </Link>
         </main>
     );
 }
 
-export default Register;
-
+export default Login;

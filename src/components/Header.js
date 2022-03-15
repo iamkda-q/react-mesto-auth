@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, Route, Switch } from "react-router-dom";
 import logo from "../images/logo.svg";
 
-function Header({ linkText, link, handleLogOut=null, email }) {
+function Header({ handleLogOut = null, email }) {
     return (
         <header className="header">
             <Link
@@ -14,14 +14,38 @@ function Header({ linkText, link, handleLogOut=null, email }) {
                     className="logo header__logo"
                 />
             </Link>
+
             {email && <p>{email}</p>}
-            <Link
-                to={link}
-                className="header__button page__hover page__hover_shade_super-dark"
-                onClick={handleLogOut}
-            >
-                {linkText}
-            </Link>
+            
+            <Route path="/sign-in">
+                <Link
+                    to="/sign-up"
+                    className="header__button page__hover page__hover_shade_super-dark"
+                    onClick={handleLogOut}
+                >
+                    Регистрация
+                </Link>
+            </Route>
+
+            <Route path="/sign-up">
+                <Link
+                    to="/sign-in"
+                    className="header__button page__hover page__hover_shade_super-dark"
+                    onClick={handleLogOut}
+                >
+                    Войти
+                </Link>
+            </Route>
+
+            <Route exact path="/">
+                <Link
+                    to="/sign-in"
+                    className="header__button page__hover page__hover_shade_super-dark"
+                    onClick={handleLogOut}
+                >
+                    Выйти
+                </Link>
+            </Route>
         </header>
     );
 }
