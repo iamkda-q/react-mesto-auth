@@ -20,7 +20,8 @@ function Login({ handleSubmitLog }) {
     }
 
     function handleSubmit(evt) {
-        handleSubmitLog(evt, email, password);
+        evt.preventDefault();
+        handleSubmitLog(email, password);
     }
 
     return (

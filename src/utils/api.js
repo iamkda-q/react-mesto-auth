@@ -1,4 +1,5 @@
 const serverErrors = {
+    400: "Запрос сформирован неправильно, проверьте, валидны ли данные",
     401: "Извините, но по какой-то причине вам отказано в доступе.",
     403: "Извините, но по какой-то причине вам отказано в доступе.",
     404: "Запрашиваемый вами ресурс отсутствует.",
@@ -21,7 +22,7 @@ class Api {
 
     _fetch(cont, method = "GET", body = undefined) {
         return fetch(`${this._baseUrl}${cont}`, {
-            headers: this._headers,
+            headers: {...this._headers, authorization: `Bearer ${localStorage.getItem("usersToken")}`},
             method: method,
             body: JSON.stringify(body),
         }).then((res) => {
@@ -66,9 +67,8 @@ class Api {
 
 const api = new Api(
     {
-        baseUrl: "https://mesto.nomoreparties.co/v1/cohort-34/",
+        baseUrl: "https://api.mydomain.mesto.nomoreparties.sbs",
         headers: {
-            authorization: "be33cdb8-be40-4c20-b8a9-d95898749c16",
             "Content-Type": "application/json",
         },
     },

@@ -23,11 +23,29 @@ function App() {
     const [selectedCard, setSelectedCard] = React.useState(null);
     const [cards, setCards] = React.useState([]);
     const [loggedIn, setLoggedIn] = React.useState(false);
+    const history = useHistory();
+    const [email, setEmail] = React.useState(undefined);
 
     const [currentUser, setCurrentUser] = React.useState({
         name: "Loading...",
         about: "Loading...",
     });
+
+    React.useEffect(() => {
+        const token = localStorage.getItem("usersToken");
+        if (token) {
+            apiAuth
+                .tokenCheck(token)
+                .then((data) => {
+                    setLoggedIn(true);
+                    setEmail(data.email);
+                    history.push("/");
+                })
+                .catch(() => {
+                    console.log("Не удалось войти в систему");
+                });
+        }
+    }, [loggedIn]);
 
     React.useEffect(() => {
         loggedIn &&
@@ -107,7 +125,7 @@ function App() {
     }, [loggedIn]);
 
     function handleCardLike(card) {
-        const isLiked = card.likes.some((like) => like._id === currentUser._id);
+        const isLiked = card.likes.some(like => like === currentUser._id);
         api.changeLike(card._id, isLiked)
             .then((newCard) => {
                 setCards((prevCards) => {
@@ -160,24 +178,7 @@ function App() {
         setSelectedCard(card);
     }
 
-    const history = useHistory();
-    const [email, setEmail] = React.useState(undefined);
 
-    React.useEffect(() => {
-        const token = localStorage.getItem("usersToken");
-        if (token) {
-            apiAuth
-                .tokenCheck(token)
-                .then((data) => {
-                    setLoggedIn(true);
-                    setEmail(data.data.email);
-                    history.push("/");
-                })
-                .catch(() => {
-                    console.log("Не удалось войти в систему");
-                });
-        }
-    }, [loggedIn]);
 
     function closeAllPopups() {
         setProfileOpen(false);
@@ -212,9 +213,7 @@ function App() {
         closeInfoToolTip();
     }
 
-    function handleSubmitReg(evt, email, password) {
-        console.log(evt, email, password)
-        evt.preventDefault();
+    function handleSubmitReg(email, password) {
         apiAuth
             .signUp(password, email)
             .then((res) => {
@@ -226,8 +225,7 @@ function App() {
             });
     }
 
-    function handleSubmitLog(evt, email, password) {
-        evt.preventDefault();
+    function handleSubmitLog(email, password) {
         apiAuth
             .signIn(password, email)
             .then((data) => {
@@ -291,19 +289,21 @@ function App() {
         <CurrentUserContext.Provider value={currentUser}>
             <div className="page">
                 <Header handleLogOut={handleLogOut} email={email} />
-                <Route path="/sign-up">
-                    <Register handleSubmitReg={handleSubmitReg} />
-                </Route>
+                <Switch>
+                    <Route path="/sign-up">
+                        <Register handleSubmitReg={handleSubmitReg} />
+                    </Route>
 
-                <Route path="/sign-in">
-                    <Login handleSubmitLog={handleSubmitLog} />
-                </Route>
+                    <Route path="/sign-in">
+                        <Login handleSubmitLog={handleSubmitLog} />
+                    </Route>
 
-                <ProtectedRoute
-                    component={MainPage}
-                    path="/"
-                    loggedIn={loggedIn}
-                />
+                    <ProtectedRoute
+                        component={MainPage}
+                        path="/"
+                        loggedIn={loggedIn}
+                    />
+                </Switch>
 
                 <InfoToolTip
                     {...infoToolTipParams}
