@@ -25,7 +25,8 @@ function Register({ handleSubmitReg }) {
     }
 
     function handleSubmit(evt) {
-        handleSubmitReg(evt, email, password);
+        evt.preventDefault();
+        handleSubmitReg(email, password);
     }
 
     return (

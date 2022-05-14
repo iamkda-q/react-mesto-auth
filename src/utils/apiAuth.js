@@ -34,21 +34,21 @@ class ApiAuth {
     }
 
     signUp(password, email) {
-        return this._fetch("/signup", "POST", {
+        return this._fetch("signup", "POST", {
             password: password,
             email: email,
         });
     }
 
     signIn(password, email) {
-        return this._fetch("/signin", "POST", {
+        return this._fetch("signin", "POST", {
             password: password,
             email: email,
         });
     }
 
     async tokenCheck(token) {
-        const res = await fetch(`${this._baseUrl}/users/me`, {
+        const res = await fetch(`${this._baseUrl}users/me`, {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
@@ -67,7 +67,7 @@ class ApiAuth {
 
 const apiAuth = new ApiAuth(
     {
-        baseUrl: "https://auth.nomoreparties.co",
+        baseUrl: "https://api.mydomain.mesto.nomoreparties.sbs",
         headers: {
             "Content-Type": "application/json",
         },
